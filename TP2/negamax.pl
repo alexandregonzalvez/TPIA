@@ -56,7 +56,7 @@
 A FAIRE : ECRIRE ici les clauses de negamax/5
 .....................................
 	*/
-/*
+
 % Profondeur max => On retourne l heuristique
 negamax(J, Etat, Pmax, Pmax, [rien, H]):-
 	heuristique(J,Etat,H).
@@ -73,24 +73,7 @@ negamax(J, Etat, P, Pmax, [C,V1]):-
 	loop_negamax(J,P,Pmax,Succ,Liste_Couples), % Loop sur les etats suivants
 	meilleur(Liste_Couples,[C,V1]), % Meilleur des etats suivant
 	V2 is -V1. % On inverse la valeur (convention negamax)
-*/
-negamax(J, Etat, P, Pmax, [Coup, Val]) :-
-    (P = Pmax -> % cas1
-        (Coup = rien,
-         heuristique(J, Etat, Val)
-         )
-        ;( situation_terminale(J, Etat) -> % cas2
-            (Coup = rien,
-             heuristique(J, Etat, Val))
-            ;( % cas3
-                successeurs(J, Etat, Succ),
-                loop_negamax(J,P,Pmax,Succ,SuccV),
-                meilleur(SuccV, [C1,V1]),
-                Coup = C1,
-                Val is -V1
-            )
-        )
-    ).
+
 	/*******************************************
 	 DEVELOPPEMENT D'UNE SITUATION NON TERMINALE
 	 successeurs/3 
@@ -102,17 +85,13 @@ negamax(J, Etat, P, Pmax, [Coup, Val]) :-
    	 retourne la liste des couples [Coup, Etat_Suivant]
  	 pour un joueur donne dans une situation donnee 
 	 */
-/*
+
 successeurs(J,Etat,Succ) :-
 	copy_term(Etat, Etat_Suiv),
 	findall([Coup,Etat_Suiv],
 		    successeur(J,Etat_Suiv,Coup),
 		    Succ).
-*/
-successeurs(J,Etat,Succ) :-
-	findall([Coup,Etat_Suiv],
-		(copy_term(Etat, Etat_Suiv), successeur(J,Etat_Suiv,Coup)),
-		 Succ).
+
 	/*************************************
          Boucle permettant d'appliquer negamax 
          a chaque situation suivante :
@@ -157,30 +136,18 @@ A FAIRE : ECRIRE ici les clauses de meilleur/2
 	*/
 
 % On ne garde que la meilleur valeur (min(+list,?elem))
-meilleur([C,V], Meilleur_Couple). % On s arrete lorsqu il reste 1 element
+meilleur([Meilleur_Couple], Meilleur_Couple). % On s arrete lorsqu il reste 1 element
 meilleur([[C,V]|Reste_Couples],Meilleur_Couple) :-
     meilleur(Reste_Couples, [NewC,NewV]),
     (V > NewV ->(Meilleur_Couple = [NewC,NewV]);(Meilleur_Couple = [C,V])).  
-/*
-meilleur([Couple], Couple).
-meilleur([[C1,V1]|Rest], MeilleurCouple) :-
-    meilleur(Rest, [C2,V2]),
-    (V1 > V2 ->
-        (MeilleurCouple = [C2,V2]);
-        (MeilleurCouple = [C1,V1])
-    ).*/
+
 	/******************
   	PROGRAMME PRINCIPAL
   	*******************/
-/*
+
 main(C,V, Pmax) :-
 	situation_initiale(I),joueur_initial(J), % initialisation
 	negamax(J,I,1, Pmax, [C, V]).      % On définit la profondeur initiale
-*/
-main(C,V, Pmax) :-
-	situation_initiale(Ini),
-	joueur_initial(J),
-	negamax(J, Ini, 1, Pmax, [C, V]).
 	/*
 A FAIRE :
 	Compl�ter puis tester le programme principal pour plusieurs valeurs de la profondeur maximale.
